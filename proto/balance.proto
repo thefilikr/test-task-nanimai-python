@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package balance;
+
+service BalanceService {
+  rpc GetBalance (GetBalanceRequest) returns (BalanceResponse);
+  rpc OpenBalanceTransaction (OpenBalanceTransactionRequest) returns (TransactionResponse);
+  rpc ConfirmBalanceTransaction (ConfirmBalanceTransactionRequest) returns (BalanceResponse);
+  rpc CancelBalanceTransaction (CancelBalanceTransactionRequest) returns (CancelResponse);
+  rpc UpdateBalanceLimit (UpdateBalanceLimitRequest) returns (BalanceResponse);
+}
+
+message GetBalanceRequest {
+  string user_id = 1;
+}
+
+message OpenBalanceTransactionRequest {
+  string user_id = 1;
+  double amount = 2;
+  string operation_type = 3;
+}
+
+message ConfirmBalanceTransactionRequest {
+  string transaction_id = 1;
+}
+
+message CancelBalanceTransactionRequest {
+  string transaction_id = 1;
+}
+
+message UpdateBalanceLimitRequest {
+  string user_id = 1;
+  double limit = 2;
+}
+
+message BalanceResponse {
+  string id = 1;
+  string user_id = 2;
+  double amount = 3;
+  double limit = 4;
+  string error = 5;
+}
+
+message TransactionResponse {
+  string transaction_id = 1;
+  string error = 2;
+}
+
+message CancelResponse {
+  string result = 1;
+  string error = 2;
+}

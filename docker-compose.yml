@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  migrate:
+    build: .
+    # command: alembic revision --autogenerate -m "init"alembic revision --autogenerate -m "init"
+    command: alembic upgrade head
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db
+
+  balance-service:
+    build: .
+    command: python app/main.py
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - AUTH_SERVICE_SECRET=${AUTH_SERVICE_SECRET}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - HTTP_PORT=${HTTP_PORT}
+      - GRPC_PORT=${GRPC_PORT}
+    depends_on:
+      - db
+      - redis
+      - migrate
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+
+  celery:
+    build: .
+    command: celery -A app.utils.task_queue.celery_worker worker --loglevel=info
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+    depends_on:
+      - db
+      - redis
+      - migrate
+
+volumes:
+  pgdata:
