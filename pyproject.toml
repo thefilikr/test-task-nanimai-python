@@ -15,7 +15,8 @@ dependencies = [
     "alembic (>=1.16.4,<2.0.0)",
     "pydantic (>=2.11.7,<3.0.0)",
     "grpcio (>=1.74.0,<2.0.0)",
-    "grpclib (>=0.4.8,<0.5.0)"
+    "grpclib (>=0.4.8,<0.5.0)",
+    "celery (>=5.5.3,<6.0.0)"
 ]
 
 [tool.poetry]
