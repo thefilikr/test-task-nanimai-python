@@ -27,6 +27,9 @@ class BalanceRepository(IBalanceRepository):
             await self.session.flush()
         return balance
 
+    # С одной стороны класскное решение - сделать обёртку. Но не думаю, что рабочее. Т.к. в реале 
+    # скорее всего логика изоляции будет прописываться отлдельно в каждом из запросов. Но здесь 
+    # думаю это хорошее решение.
     async def safe_update(self, update_func, *args, isolation_level: str = "SERIALIZABLE", **kwargs):
         from sqlalchemy.exc import OperationalError
         try:

@@ -7,6 +7,8 @@ from app.db.base import Base
 class Balance(Base):
     __tablename__ = "balances"
 
+    # Везде прописал UUID вместо числовых id, т.к. подразумевается, что это один из микросервисов. 
+    # А в таикх случаях лучшен использовать UUID для более удобной стыковки данных
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
     amount = Column(Numeric(18, 2), nullable=False, default=0)

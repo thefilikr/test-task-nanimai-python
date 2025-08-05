@@ -33,6 +33,7 @@ class TransactionService(ITransactionService):
             total += float(tx.amount)
         return total
 
+    # Оставил этот функуионла здесь, так что можно подключать любой другой воркер. 
     async def is_timeout(self, transaction: Transaction, timeout_minutes: int = 60) -> bool:
         """
         Проверяет, истёк ли таймаут транзакции.
